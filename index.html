@@ -1,1113 +1,718 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 25.8.2.2 (Windows)"/>
-	<meta name="created" content="2025-12-04T17:56:16.524597700"/>
-	<meta name="changed" content="2025-12-04T17:56:56.377657800"/>
-	<style type="text/css">
-		@page { size: 8.5in 11in; margin: 0.79in }
-		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curb Crew - Bin Rolling Manager</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><p style="margin-bottom: 0in; line-height: 100%">
-import React, { useState, useEffect } from 'react';<br/>
-import {
-Home, Users, DollarSign, Map, Bell, Phone, Plus, Edit2, Trash2, Save,
-X, Check, MapPin, Navigation } from 'lucide-react';<br/>
-<br/>
-const
-BinBusinessApp = () =&gt; {<br/>
-  // Load data from storage or use
-defaults<br/>
-  const [activePage, setActivePage] =
-useState('clients');<br/>
-  const [clients, setClients] = useState(()
-=&gt; {<br/>
-    const saved = localStorage.getItem('clients');<br/>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Lucide React icons as inline SVG components
+        const Users = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+        );
+        
+        const DollarSign = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+        );
+        
+        const Map = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+            </svg>
+        );
+        
+        const Bell = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        );
+        
+        const Phone = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+        );
+        
+        const Plus = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        );
+        
+        const Edit2 = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+        );
+        
+        const Trash2 = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+        );
+        
+        const Save = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+        );
+        
+        const X = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        );
+        
+        const MapPin = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+        );
+        
+        const Navigation = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+            </svg>
+        );
 
-   return saved ? JSON.parse(saved) : [<br/>
-      { id: 1, name:
-'John Smith', address: '123 Oak St', service: 'Weekly roll-out',
-payment: 'paid', phone: '555-0101', lat: 37.7749, lng: -122.4194 },<br/>
+        const BinBusinessApp = () => {
+          const [activePage, setActivePage] = useState('clients');
+          const [clients, setClients] = useState(() => {
+            const saved = localStorage.getItem('clients');
+            return saved ? JSON.parse(saved) : [
+              { id: 1, name: 'John Smith', address: '123 Oak St', service: 'Weekly roll-out', payment: 'paid', phone: '555-0101', lat: 37.7749, lng: -122.4194 },
+              { id: 2, name: 'Sarah Johnson', address: '456 Maple Ave', service: 'Bi-weekly + roll-back', payment: 'pending', phone: '555-0102', lat: 37.7759, lng: -122.4184 }
+            ];
+          });
+          const [prices, setPrices] = useState(() => {
+            const saved = localStorage.getItem('prices');
+            return saved ? JSON.parse(saved) : [
+              { id: 1, service: 'Weekly roll-out', price: '20.00' },
+              { id: 2, service: 'Bi-weekly roll-out', price: '15.00' },
+              { id: 3, service: 'Roll-back service', price: '10.00' },
+              { id: 4, service: 'Special request', price: '25.00' }
+            ];
+          });
+          const [notifications, setNotifications] = useState(() => {
+            const saved = localStorage.getItem('notifications');
+            return saved ? JSON.parse(saved) : [
+              { id: 1, type: 'pickup', message: 'Pickup day tomorrow for 8 clients', date: 'Today', priority: 'high' },
+              { id: 2, type: 'payment', message: 'Sarah Johnson payment pending', date: 'Today', priority: 'medium' },
+              { id: 3, type: 'new', message: 'New client request received', date: 'Yesterday', priority: 'low' }
+            ];
+          });
+          const [editingClient, setEditingClient] = useState(null);
+          const [editingPrice, setEditingPrice] = useState(null);
+          const [showAddClient, setShowAddClient] = useState(false);
+          const [showAddPrice, setShowAddPrice] = useState(false);
+          const [showAddNotification, setShowAddNotification] = useState(false);
+          const [showRouteInfo, setShowRouteInfo] = useState(false);
 
-     { id: 2, name: 'Sarah Johnson', address: '456 Maple Ave',
-service: 'Bi-weekly + roll-back', payment: 'pending', phone:
-'555-0102', lat: 37.7759, lng: -122.4184 }<br/>
-    ];<br/>
-  });<br/>
+          useEffect(() => {
+            localStorage.setItem('clients', JSON.stringify(clients));
+          }, [clients]);
 
- const [prices, setPrices] = useState(() =&gt; {<br/>
-    const saved
-= localStorage.getItem('prices');<br/>
-    return saved ?
-JSON.parse(saved) : [<br/>
-      { id: 1, service: 'Weekly roll-out',
-price: '20.00' },<br/>
-      { id: 2, service: 'Bi-weekly roll-out',
-price: '15.00' },<br/>
-      { id: 3, service: 'Roll-back service',
-price: '10.00' },<br/>
-      { id: 4, service: 'Special request',
-price: '25.00' }<br/>
-    ];<br/>
-  });<br/>
-  const [notifications,
-setNotifications] = useState(() =&gt; {<br/>
-    const saved =
-localStorage.getItem('notifications');<br/>
-    return saved ?
-JSON.parse(saved) : [<br/>
-      { id: 1, type: 'pickup', message:
-'Pickup day tomorrow for 8 clients', date: 'Today', priority: 'high'
-},<br/>
-      { id: 2, type: 'payment', message: 'Sarah Johnson
-payment pending', date: 'Today', priority: 'medium' },<br/>
-      {
-id: 3, type: 'new', message: 'New client request received', date:
-'Yesterday', priority: 'low' }<br/>
-    ];<br/>
-  });<br/>
-  const
-[editingClient, setEditingClient] = useState(null);<br/>
-  const
-[editingPrice, setEditingPrice] = useState(null);<br/>
-  const
-[showAddClient, setShowAddClient] = useState(false);<br/>
-  const
-[showAddPrice, setShowAddPrice] = useState(false);<br/>
-  const
-[showAddNotification, setShowAddNotification] = useState(false);<br/>
+          useEffect(() => {
+            localStorage.setItem('prices', JSON.stringify(prices));
+          }, [prices]);
 
- const [showRouteInfo, setShowRouteInfo] = useState(false);<br/>
-<br/>
+          useEffect(() => {
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+          }, [notifications]);
 
- // Save data to storage whenever it changes<br/>
-  useEffect(() =&gt;
-{<br/>
-    localStorage.setItem('clients', JSON.stringify(clients));<br/>
+          const NavButton = ({ icon: Icon, label, page }) => (
+            <button
+              onClick={() => setActivePage(page)}
+              className={`flex flex-col items-center justify-center p-3 transition-colors ${
+                activePage === page ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <Icon size={24} />
+              <span className="text-xs mt-1">{label}</span>
+            </button>
+          );
 
- }, [clients]);<br/>
-<br/>
-  useEffect(() =&gt; {<br/>
-   
-localStorage.setItem('prices', JSON.stringify(prices));<br/>
-  },
-[prices]);<br/>
-<br/>
-  useEffect(() =&gt; {<br/>
-   
-localStorage.setItem('notifications',
-JSON.stringify(notifications));<br/>
-  }, [notifications]);<br/>
-<br/>
+          const ClientList = () => {
+            const handleSaveClient = (client) => {
+              if (client.id) {
+                setClients(clients.map(c => c.id === client.id ? client : c));
+              } else {
+                setClients([...clients, { ...client, id: Date.now() }]);
+              }
+              setEditingClient(null);
+              setShowAddClient(false);
+            };
 
- const NavButton = ({ icon: Icon, label, page }) =&gt; (<br/>
-   
-&lt;button<br/>
-      onClick={() =&gt; setActivePage(page)}<br/>
-   
-  className={`flex flex-col items-center justify-center p-3
-transition-colors ${<br/>
-        activePage === page ?
-'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'<br/>
-  
-   }`}<br/>
-    &gt;<br/>
-      &lt;Icon size={24} /&gt;<br/>
-     
-&lt;span className=&quot;text-xs mt-1&quot;&gt;{label}&lt;/span&gt;<br/>
+            const handleDeleteClient = (id) => {
+              setClients(clients.filter(c => c.id !== id));
+            };
 
-   &lt;/button&gt;<br/>
-  );<br/>
-<br/>
-  const ClientList = () =&gt;
-{<br/>
-    const handleSaveClient = (client) =&gt; {<br/>
-      if
-(client.id) {<br/>
-        setClients(clients.map(c =&gt; c.id ===
-client.id ? client : c));<br/>
-      } else {<br/>
-       
-setClients([...clients, { ...client, id: Date.now() }]);<br/>
-     
-}<br/>
-      setEditingClient(null);<br/>
-     
-setShowAddClient(false);<br/>
-    };<br/>
-<br/>
-    const
-handleDeleteClient = (id) =&gt; {<br/>
-     
-setClients(clients.filter(c =&gt; c.id !== id));<br/>
-    };<br/>
-<br/>
+            return (
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-800">Clients</h2>
+                  <button
+                    onClick={() => setShowAddClient(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                  >
+                    <Plus size={20} /> Add Client
+                  </button>
+                </div>
 
-   return (<br/>
-      &lt;div className=&quot;p-4&quot;&gt;<br/>
-   
-    &lt;div className=&quot;flex justify-between items-center mb-4&quot;&gt;<br/>
+                {(showAddClient || editingClient) && (
+                  <ClientForm
+                    client={editingClient || { name: '', address: '', service: '', payment: 'pending', phone: '', lat: 37.7749, lng: -122.4194 }}
+                    onSave={handleSaveClient}
+                    onCancel={() => { setEditingClient(null); setShowAddClient(false); }}
+                  />
+                )}
 
-         &lt;h2 className=&quot;text-2xl font-bold
-text-gray-800&quot;&gt;Clients&lt;/h2&gt;<br/>
-          &lt;button<br/>
+                <div className="space-y-3">
+                  {clients.map(client => (
+                    <div key={client.id} className="bg-white rounded-lg shadow p-4 border border-gray-200">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-lg text-gray-800">{client.name}</h3>
+                          <p className="text-gray-600 text-sm">{client.address}</p>
+                          <p className="text-gray-500 text-sm mt-1">{client.service}</p>
+                          <p className="text-gray-500 text-sm">{client.phone}</p>
+                          <span className={`inline-block mt-2 px-2 py-1 rounded text-xs font-medium ${
+                            client.payment === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {client.payment === 'paid' ? 'Paid' : 'Pending'}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setEditingClient(client)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit2 size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClient(client.id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          };
 
-           onClick={() =&gt; setShowAddClient(true)}<br/>
-           
-className=&quot;bg-blue-600 text-white px-4 py-2 rounded-lg flex
-items-center gap-2 hover:bg-blue-700&quot;<br/>
-          &gt;<br/>
- 
-          &lt;Plus size={20} /&gt; Add Client<br/>
-         
-&lt;/button&gt;<br/>
-        &lt;/div&gt;<br/>
-<br/>
-       
-{(showAddClient || editingClient) &amp;&amp; (<br/>
-         
-&lt;ClientForm<br/>
-            client={editingClient || { name: '',
-address: '', service: '', payment: 'pending', phone: '', lat:
-37.7749, lng: -122.4194 }}<br/>
-           
-onSave={handleSaveClient}<br/>
-            onCancel={() =&gt; {
-setEditingClient(null); setShowAddClient(false); }}<br/>
-         
-/&gt;<br/>
-        )}<br/>
-<br/>
-        &lt;div
-className=&quot;space-y-3&quot;&gt;<br/>
-         
-{clients.map(client =&gt; (<br/>
-            &lt;div key={client.id}
-className=&quot;bg-white rounded-lg shadow p-4 border
-border-gray-200&quot;&gt;<br/>
-              &lt;div className=&quot;flex
-justify-between items-start&quot;&gt;<br/>
-                &lt;div
-className=&quot;flex-1&quot;&gt;<br/>
-                  &lt;h3
-className=&quot;font-semibold text-lg
-text-gray-800&quot;&gt;{client.name}&lt;/h3&gt;<br/>
+          const ClientForm = ({ client, onSave, onCancel }) => {
+            const [formData, setFormData] = useState(client);
+
+            return (
+              <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+                <h3 className="font-semibold mb-3 text-gray-800">
+                  {client.id ? 'Edit Client' : 'New Client'}
+                </h3>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Service Notes"
+                    value={formData.service}
+                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                    className="w-full p-2 border rounded"
+                  />
+                  <select
+                    value={formData.payment}
+                    onChange={(e) => setFormData({ ...formData, payment: e.target.value })}
+                    className="w-full p-2 border rounded"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                  </select>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onSave(formData)}
+                      className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} /> Save
+                    </button>
+                    <button
+                      onClick={onCancel}
+                      className="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500 flex items-center justify-center gap-2"
+                    >
+                      <X size={18} /> Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          };
+
+          const PricePage = () => {
+            const handleSavePrice = (price) => {
+              const formattedPrice = parseFloat(price.price).toFixed(2);
+              if (price.id) {
+                setPrices(prices.map(p => p.id === price.id ? { ...price, price: formattedPrice } : p));
+              } else {
+                setPrices([...prices, { ...price, id: Date.now(), price: formattedPrice }]);
+              }
+              setEditingPrice(null);
+              setShowAddPrice(false);
+            };
+
+            const handleDeletePrice = (id) => {
+              setPrices(prices.filter(p => p.id !== id));
+            };
+
+            return (
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-800">Service Prices</h2>
+                  <button
+                    onClick={() => setShowAddPrice(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                  >
+                    <Plus size={20} /> Add Service
+                  </button>
+                </div>
+
+                {(showAddPrice || editingPrice) && (
+                  <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+                    <h3 className="font-semibold mb-3 text-gray-800">
+                      {editingPrice ? 'Edit Service' : 'New Service'}
+                    </h3>
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Service name"
+                        value={editingPrice?.service || ''}
+                        onChange={(e) => setEditingPrice({ ...editingPrice, service: e.target.value })}
+                        className="w-full p-2 border rounded"
+                      />
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="Price (e.g., 1.50)"
+                        value={editingPrice?.price || ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                            setEditingPrice({ ...editingPrice, price: value });
+                          }
+                        }}
+                        className="w-full p-2 border rounded"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleSavePrice(editingPrice)}
+                          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => { setEditingPrice(null); setShowAddPrice(false); }}
+                          className="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid gap-3">
+                  {prices.map(price => (
+                    <div key={price.id} className="bg-white rounded-lg shadow p-4 border border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h3 className="font-semibold text-gray-800">{price.service}</h3>
+                          <p className="text-2xl font-bold text-green-600 mt-1">${price.price}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setEditingPrice(price)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit2 size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePrice(price.id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          };
+
+          const MapPage = () => {
+            const optimizeRoute = () => {
+              setShowRouteInfo(true);
+            };
+
+            const getOptimizedRoute = () => {
+              return [...clients].sort((a, b) => a.address.localeCompare(b.address));
+            };
+
+            const optimizedClients = getOptimizedRoute();
+            const totalStops = clients.length;
+            const estimatedTimePerStop = 5;
+            const estimatedDrivingTime = totalStops * 1;
+            const totalTime = (totalStops * estimatedTimePerStop) + estimatedDrivingTime;
+
+            return (
+              <div className="p-4">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Service Map</h2>
                 
- &lt;p className=&quot;text-gray-600 text-sm&quot;&gt;{client.address}&lt;/p&gt;<br/>
+                <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-lg p-8 mb-4 text-center border border-gray-300 relative overflow-hidden" style={{ height: '400px' }}>
+                  <div className="absolute inset-0 opacity-10">
+                    <div className="grid grid-cols-8 h-full">
+                      {[...Array(64)].map((_, i) => (
+                        <div key={i} className="border border-gray-400"></div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="relative z-10">
+                    <MapPin size={48} className="mx-auto text-gray-600 mb-3" />
+                    <p className="text-gray-700 font-medium">Interactive Map View</p>
+                    <p className="text-sm text-gray-600 mt-2">Pin locations for each client</p>
+                  </div>
+                  
+                  {clients.slice(0, 3).map((client, idx) => (
+                    <div
+                      key={client.id}
+                      className="absolute bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold shadow-lg cursor-pointer hover:scale-110 transition-transform"
+                      style={{
+                        left: `${20 + idx * 30}%`,
+                        top: `${30 + idx * 15}%`
+                      }}
+                      title={client.name}
+                    >
+                      {idx + 1}
+                    </div>
+                  ))}
+                </div>
 
-                 &lt;p className=&quot;text-gray-500 text-sm
-mt-1&quot;&gt;{client.service}&lt;/p&gt;<br/>
-                  &lt;p
-className=&quot;text-gray-500 text-sm&quot;&gt;{client.phone}&lt;/p&gt;<br/>
+                <button 
+                  onClick={optimizeRoute}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 mb-4"
+                >
+                  <Navigation size={20} /> Optimize Route
+                </button>
 
-                 &lt;span className={`inline-block mt-2 px-2 py-1
-rounded text-xs font-medium ${<br/>
-                   
-client.payment === 'paid' ? 'bg-green-100 text-green-800' :
-'bg-yellow-100 text-yellow-800'<br/>
-                  }`}&gt;<br/>
- 
-                  {client.payment === 'paid' ? 'Paid' : 'Pending'}<br/>
+                {showRouteInfo && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold text-gray-800">Optimized Route Info</h3>
+                      <button 
+                        onClick={() => setShowRouteInfo(false)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                      <div className="bg-white rounded p-2">
+                        <p className="text-gray-600">Total Stops</p>
+                        <p className="text-xl font-bold text-blue-600">{totalStops}</p>
+                      </div>
+                      <div className="bg-white rounded p-2">
+                        <p className="text-gray-600">Est. Time</p>
+                        <p className="text-xl font-bold text-blue-600">{totalTime} min</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">Route optimized by address sequence</p>
+                  </div>
+                )}
 
-                 &lt;/span&gt;<br/>
-                &lt;/div&gt;<br/>
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-gray-800 mb-2">
+                    {showRouteInfo ? 'Suggested Route Order' : 'Client Locations'}
+                  </h3>
+                  {(showRouteInfo ? optimizedClients : clients).map((client, idx) => (
+                    <div key={client.id} className="bg-white rounded-lg shadow p-3 border border-gray-200 flex items-center gap-3">
+                      <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        {idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-800">{client.name}</p>
+                        <p className="text-sm text-gray-600">{client.address}</p>
+                      </div>
+                      {showRouteInfo && (
+                        <div className="text-xs text-gray-500">
+                          ~{estimatedTimePerStop} min
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          };
 
-               &lt;div className=&quot;flex gap-2&quot;&gt;<br/>
-    
-             &lt;button<br/>
-                    onClick={() =&gt;
-setEditingClient(client)}<br/>
-                   
-className=&quot;text-blue-600 hover:text-blue-800&quot;<br/>
-        
-         &gt;<br/>
-                    &lt;Edit2 size={18} /&gt;<br/>
+          const NotificationsPage = () => {
+            const getPriorityColor = (priority) => {
+              switch(priority) {
+                case 'high': return 'bg-red-100 text-red-800 border-red-200';
+                case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                default: return 'bg-blue-100 text-blue-800 border-blue-200';
+              }
+            };
 
-                 &lt;/button&gt;<br/>
-                  &lt;button<br/>
+            const handleDismiss = (id) => {
+              setNotifications(notifications.filter(n => n.id !== id));
+            };
 
-                   onClick={() =&gt; handleDeleteClient(client.id)}<br/>
+            const handleAddNotification = (notif) => {
+              setNotifications([...notifications, { ...notif, id: Date.now(), date: 'Today' }]);
+              setShowAddNotification(false);
+            };
 
-                   className=&quot;text-red-600 hover:text-red-800&quot;<br/>
+            return (
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h2 className="text-2xl font-bold text-gray-800">Notifications</h2>
+                  <button
+                    onClick={() => setShowAddNotification(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                  >
+                    <Plus size={20} /> Add
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">Note: Clients should include their name when sending notifications</p>
 
-                 &gt;<br/>
-                    &lt;Trash2 size={18}
-/&gt;<br/>
-                  &lt;/button&gt;<br/>
-               
-&lt;/div&gt;<br/>
-              &lt;/div&gt;<br/>
-            &lt;/div&gt;<br/>
+                {showAddNotification && (
+                  <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+                    <h3 className="font-semibold mb-3 text-gray-800">New Notification</h3>
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Notification message"
+                        id="notif-message"
+                        className="w-full p-2 border rounded"
+                      />
+                      <select
+                        id="notif-priority"
+                        className="w-full p-2 border rounded"
+                        defaultValue="medium"
+                      >
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                      </select>
+                      <select
+                        id="notif-type"
+                        className="w-full p-2 border rounded"
+                        defaultValue="general"
+                      >
+                        <option value="pickup">Pickup</option>
+                        <option value="payment">Payment</option>
+                        <option value="new">New Client</option>
+                        <option value="general">General</option>
+                      </select>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            const message = document.getElementById('notif-message').value;
+                            const priority = document.getElementById('notif-priority').value;
+                            const type = document.getElementById('notif-type').value;
+                            if (message) {
+                              handleAddNotification({ message, priority, type });
+                            }
+                          }}
+                          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+>
+<Save size={18} className="inline mr-2" /> Save
+</button>
+<button
+onClick={() => setShowAddNotification(false)}
+className="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500"
+>
+<X size={18} className="inline mr-2" /> Cancel
+</button>
+</div>
+</div>
+</div>
+)}<div className="space-y-3">
+              {notifications.length === 0 ? (
+                <div className="bg-gray-50 rounded-lg p-8 text-center">
+                  <Bell size={48} className="mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600">No notifications</p>
+                </div>
+              ) : (
+                notifications.map(notif => (
+                  <div key={notif.id} className={`rounded-lg shadow p-4 border ${getPriorityColor(notif.priority)}`}>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-medium">{notif.message}</p>
+                        <p className="text-sm opacity-75 mt-1">{notif.date}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDismiss(notif.id)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+      };
 
-         ))}<br/>
-        &lt;/div&gt;<br/>
-      &lt;/div&gt;<br/>
- 
-  );<br/>
-  };<br/>
-<br/>
-  const ClientForm = ({ client, onSave,
-onCancel }) =&gt; {<br/>
-    const [formData, setFormData] =
-useState(client);<br/>
-<br/>
-    return (<br/>
-      &lt;div
-className=&quot;bg-blue-50 rounded-lg p-4 mb-4 border
-border-blue-200&quot;&gt;<br/>
-        &lt;h3
-className=&quot;font-semibold mb-3 text-gray-800&quot;&gt;<br/>
-     
-    {client.id ? 'Edit Client' : 'New Client'}<br/>
-        &lt;/h3&gt;<br/>
+      const ContactPage = () => {
+        const handleSendMessage = () => {
+          const name = document.getElementById('contact-name').value;
+          const email = document.getElementById('contact-email').value;
+          const message = document.getElementById('contact-message').value;
+          
+          const subject = encodeURIComponent('Message from Curb Crew App');
+          const body = encodeURIComponent(
+            `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+          );
+          window.location.href = `mailto:curbcrew@proton.me?subject=${subject}&body=${body}`;
+        };
 
-       &lt;div className=&quot;space-y-3&quot;&gt;<br/>
-         
-&lt;input<br/>
-            type=&quot;text&quot;<br/>
-           
-placeholder=&quot;Name&quot;<br/>
-            value={formData.name}<br/>
-
-           onChange={(e) =&gt; setFormData({ ...formData, name:
-e.target.value })}<br/>
-            className=&quot;w-full p-2 border
-rounded&quot;<br/>
-          /&gt;<br/>
-          &lt;input<br/>
-    
-       type=&quot;text&quot;<br/>
-            placeholder=&quot;Address&quot;<br/>
-
-           value={formData.address}<br/>
-            onChange={(e) =&gt;
-setFormData({ ...formData, address: e.target.value })}<br/>
-         
-  className=&quot;w-full p-2 border rounded&quot;<br/>
-          /&gt;<br/>
-
-         &lt;input<br/>
-            type=&quot;text&quot;<br/>
-      
-     placeholder=&quot;Phone&quot;<br/>
-           
-value={formData.phone}<br/>
-            onChange={(e) =&gt;
-setFormData({ ...formData, phone: e.target.value })}<br/>
-           
-className=&quot;w-full p-2 border rounded&quot;<br/>
-          /&gt;<br/>
-
-         &lt;input<br/>
-            type=&quot;text&quot;<br/>
-      
-     placeholder=&quot;Service Notes&quot;<br/>
-           
-value={formData.service}<br/>
-            onChange={(e) =&gt;
-setFormData({ ...formData, service: e.target.value })}<br/>
-         
-  className=&quot;w-full p-2 border rounded&quot;<br/>
-          /&gt;<br/>
-
-         &lt;select<br/>
-            value={formData.payment}<br/>
-  
-         onChange={(e) =&gt; setFormData({ ...formData, payment:
-e.target.value })}<br/>
-            className=&quot;w-full p-2 border
-rounded&quot;<br/>
-          &gt;<br/>
-            &lt;option
-value=&quot;pending&quot;&gt;Pending&lt;/option&gt;<br/>
-           
-&lt;option value=&quot;paid&quot;&gt;Paid&lt;/option&gt;<br/>
-       
-  &lt;/select&gt;<br/>
-          &lt;div className=&quot;flex
-gap-2&quot;&gt;<br/>
-            &lt;button<br/>
-             
-onClick={() =&gt; onSave(formData)}<br/>
-             
-className=&quot;flex-1 bg-green-600 text-white py-2 rounded
-hover:bg-green-700 flex items-center justify-center gap-2&quot;<br/>
-
-           &gt;<br/>
-              &lt;Save size={18} /&gt; Save<br/>
-
-           &lt;/button&gt;<br/>
-            &lt;button<br/>
-         
-    onClick={onCancel}<br/>
-              className=&quot;flex-1
-bg-gray-400 text-white py-2 rounded hover:bg-gray-500 flex
-items-center justify-center gap-2&quot;<br/>
-            &gt;<br/>
-  
-           &lt;X size={18} /&gt; Cancel<br/>
-            &lt;/button&gt;<br/>
-
-         &lt;/div&gt;<br/>
-        &lt;/div&gt;<br/>
-      &lt;/div&gt;<br/>
-
-   );<br/>
-  };<br/>
-<br/>
-  const PricePage = () =&gt; {<br/>
-   
-const handleSavePrice = (price) =&gt; {<br/>
-      const
-formattedPrice = parseFloat(price.price).toFixed(2);<br/>
-      if
-(price.id) {<br/>
-        setPrices(prices.map(p =&gt; p.id ===
-price.id ? { ...price, price: formattedPrice } : p));<br/>
-      }
-else {<br/>
-        setPrices([...prices, { ...price, id: Date.now(),
-price: formattedPrice }]);<br/>
-      }<br/>
-     
-setEditingPrice(null);<br/>
-      setShowAddPrice(false);<br/>
-   
-};<br/>
-<br/>
-    const handleDeletePrice = (id) =&gt; {<br/>
-     
-setPrices(prices.filter(p =&gt; p.id !== id));<br/>
-    };<br/>
-<br/>
-
-   return (<br/>
-      &lt;div className=&quot;p-4&quot;&gt;<br/>
-   
-    &lt;div className=&quot;flex justify-between items-center mb-4&quot;&gt;<br/>
-
-         &lt;h2 className=&quot;text-2xl font-bold
-text-gray-800&quot;&gt;Service Prices&lt;/h2&gt;<br/>
-         
-&lt;button<br/>
-            onClick={() =&gt; setShowAddPrice(true)}<br/>
-
-           className=&quot;bg-blue-600 text-white px-4 py-2
-rounded-lg flex items-center gap-2 hover:bg-blue-700&quot;<br/>
-     
-    &gt;<br/>
-            &lt;Plus size={20} /&gt; Add Service<br/>
- 
-        &lt;/button&gt;<br/>
-        &lt;/div&gt;<br/>
-<br/>
-       
-{(showAddPrice || editingPrice) &amp;&amp; (<br/>
-          &lt;div
-className=&quot;bg-blue-50 rounded-lg p-4 mb-4 border
-border-blue-200&quot;&gt;<br/>
-            &lt;h3
-className=&quot;font-semibold mb-3 text-gray-800&quot;&gt;<br/>
-     
-        {editingPrice ? 'Edit Service' : 'New Service'}<br/>
-        
-   &lt;/h3&gt;<br/>
-            &lt;div className=&quot;space-y-3&quot;&gt;<br/>
-
-             &lt;input<br/>
-                type=&quot;text&quot;<br/>
-
-               placeholder=&quot;Service name&quot;<br/>
+        return (
+          <div className="p-4">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact</h2>
             
-   value={editingPrice?.service || ''}<br/>
-               
-onChange={(e) =&gt; setEditingPrice({ ...editingPrice, service:
-e.target.value })}<br/>
-                className=&quot;w-full p-2
-border rounded&quot;<br/>
-              /&gt;<br/>
-             
-&lt;input<br/>
-                type=&quot;text&quot;<br/>
-           
-    inputMode=&quot;decimal&quot;<br/>
-               
-placeholder=&quot;Price (e.g., 1.50)&quot;<br/>
-               
-value={editingPrice?.price || ''}<br/>
-                onChange={(e)
-=&gt; {<br/>
-                  const value = e.target.value;<br/>
-   
-              // Allow empty, numbers, and one decimal point<br/>
-   
-              if (value === '' || /^\d*\.?\d*$/.test(value)) {<br/>
- 
-                  setEditingPrice({ ...editingPrice, price: value
-});<br/>
-                  }<br/>
-                }}<br/>
-           
-    className=&quot;w-full p-2 border rounded&quot;<br/>
-            
- /&gt;<br/>
-              &lt;div className=&quot;flex gap-2&quot;&gt;<br/>
+            <div className="bg-white rounded-lg shadow p-6 mb-4 border border-gray-200">
+              <h3 className="font-semibold text-lg mb-4 text-gray-800">Business Contact</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Phone className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Phone</p>
+                    <p className="font-medium text-gray-800">(505) 670-2527</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-medium text-gray-800">curbcrew@proton.me</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-               &lt;button<br/>
-                  onClick={() =&gt;
-handleSavePrice(editingPrice)}<br/>
-                 
-className=&quot;flex-1 bg-green-600 text-white py-2 rounded
-hover:bg-green-700&quot;<br/>
-                &gt;<br/>
-             
-    Save<br/>
-                &lt;/button&gt;<br/>
-               
-&lt;button<br/>
-                  onClick={() =&gt; {
-setEditingPrice(null); setShowAddPrice(false); }}<br/>
-              
-   className=&quot;flex-1 bg-gray-400 text-white py-2 rounded
-hover:bg-gray-500&quot;<br/>
-                &gt;<br/>
-              
-   Cancel<br/>
-                &lt;/button&gt;<br/>
-             
-&lt;/div&gt;<br/>
-            &lt;/div&gt;<br/>
-          &lt;/div&gt;<br/>
+            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+              <h3 className="font-semibold text-lg mb-4 text-gray-800">Quick Message</h3>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  id="contact-name"
+                  placeholder="Your name"
+                  className="w-full p-3 border rounded-lg"
+                />
+                <input
+                  type="email"
+                  id="contact-email"
+                  placeholder="Your email"
+                  className="w-full p-3 border rounded-lg"
+                />
+                <textarea
+                  id="contact-message"
+                  placeholder="Your message"
+                  rows="4"
+                  className="w-full p-3 border rounded-lg"
+                ></textarea>
+                <a 
+                  href="mailto:curbcrew@proton.me?subject=Message from Curb Crew App"
+                  className="block w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 text-center"
+                >
+                  Send Message to Curb Crew
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      };
 
-       )}<br/>
-<br/>
-        &lt;div className=&quot;grid gap-3&quot;&gt;<br/>
+      return (
+        <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+          <header className="bg-blue-600 text-white p-4 shadow-lg">
+            <h1 className="text-xl font-bold">Curb Crew</h1>
+            <p className="text-sm opacity-90">Manage your business on the go</p>
+          </header>
 
-         {prices.map(price =&gt; (<br/>
-            &lt;div
-key={price.id} className=&quot;bg-white rounded-lg shadow p-4 border
-border-gray-200&quot;&gt;<br/>
-              &lt;div className=&quot;flex
-justify-between items-center&quot;&gt;<br/>
-                &lt;div&gt;<br/>
+          <main className="flex-1 overflow-y-auto pb-20">
+            {activePage === 'clients' && <ClientList />}
+            {activePage === 'prices' && <PricePage />}
+            {activePage === 'map' && <MapPage />}
+            {activePage === 'notifications' && <NotificationsPage />}
+            {activePage === 'contact' && <ContactPage />}
+          </main>
 
-                 &lt;h3 className=&quot;font-semibold
-text-gray-800&quot;&gt;{price.service}&lt;/h3&gt;<br/>
-              
-   &lt;p className=&quot;text-2xl font-bold text-green-600
-mt-1&quot;&gt;${price.price}&lt;/p&gt;<br/>
-                &lt;/div&gt;<br/>
+          <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg max-w-md mx-auto">
+            <div className="grid grid-cols-5">
+              <NavButton icon={Users} label="Clients" page="clients" />
+              <NavButton icon={DollarSign} label="Prices" page="prices" />
+              <NavButton icon={Map} label="Map" page="map" />
+              <NavButton icon={Bell} label="Alerts" page="notifications" />
+              <NavButton icon={Phone} label="Contact" page="contact" />
+            </div>
+          </nav>
+        </div>
+      );
+    };
 
-               &lt;div className=&quot;flex gap-2&quot;&gt;<br/>
-    
-             &lt;button<br/>
-                    onClick={() =&gt;
-setEditingPrice(price)}<br/>
-                   
-className=&quot;text-blue-600 hover:text-blue-800&quot;<br/>
-        
-         &gt;<br/>
-                    &lt;Edit2 size={18} /&gt;<br/>
-
-                 &lt;/button&gt;<br/>
-                  &lt;button<br/>
-
-                   onClick={() =&gt; handleDeletePrice(price.id)}<br/>
-
-                   className=&quot;text-red-600 hover:text-red-800&quot;<br/>
-
-                 &gt;<br/>
-                    &lt;Trash2 size={18}
-/&gt;<br/>
-                  &lt;/button&gt;<br/>
-               
-&lt;/div&gt;<br/>
-              &lt;/div&gt;<br/>
-            &lt;/div&gt;<br/>
-
-         ))}<br/>
-        &lt;/div&gt;<br/>
-      &lt;/div&gt;<br/>
- 
-  );<br/>
-  };<br/>
-<br/>
-  const MapPage = () =&gt; {<br/>
-    const
-optimizeRoute = () =&gt; {<br/>
-      setShowRouteInfo(true);<br/>
-  
- };<br/>
-<br/>
-    // Simple route optimization: sort by address for
-a logical sequence<br/>
-    const getOptimizedRoute = () =&gt; {<br/>
-
-     return [...clients].sort((a, b) =&gt;
-a.address.localeCompare(b.address));<br/>
-    };<br/>
-<br/>
-    const
-optimizedClients = getOptimizedRoute();<br/>
-    const totalStops =
-clients.length;<br/>
-    const estimatedTimePerStop = 5; // minutes<br/>
-
-   const estimatedDrivingTime = totalStops * 1; // 1 min average
-between stops<br/>
-    const totalTime = (totalStops *
-estimatedTimePerStop) + estimatedDrivingTime;<br/>
-<br/>
-    return
-(<br/>
-      &lt;div className=&quot;p-4&quot;&gt;<br/>
-        &lt;h2
-className=&quot;text-2xl font-bold text-gray-800 mb-4&quot;&gt;Service
-Map&lt;/h2&gt;<br/>
-        <br/>
-        &lt;div
-className=&quot;bg-gradient-to-br from-green-100 to-blue-100
-rounded-lg p-8 mb-4 text-center border border-gray-300 relative
-overflow-hidden&quot; style={{ height: '400px' }}&gt;<br/>
-         
-&lt;div className=&quot;absolute inset-0 opacity-10&quot;&gt;<br/>
-  
-         &lt;div className=&quot;grid grid-cols-8 h-full&quot;&gt;<br/>
-
-             {[...Array(64)].map((_, i) =&gt; (<br/>
-               
-&lt;div key={i} className=&quot;border border-gray-400&quot;&gt;&lt;/div&gt;<br/>
-
-             ))}<br/>
-            &lt;/div&gt;<br/>
-          &lt;/div&gt;<br/>
-
-         &lt;div className=&quot;relative z-10&quot;&gt;<br/>
-       
-    &lt;MapPin size={48} className=&quot;mx-auto text-gray-600 mb-3&quot;
-/&gt;<br/>
-            &lt;p className=&quot;text-gray-700
-font-medium&quot;&gt;Interactive Map View&lt;/p&gt;<br/>
-           
-&lt;p className=&quot;text-sm text-gray-600 mt-2&quot;&gt;Pin
-locations for each client&lt;/p&gt;<br/>
-          &lt;/div&gt;<br/>
-
-         <br/>
-          {clients.slice(0, 3).map((client, idx) =&gt;
-(<br/>
-            &lt;div<br/>
-              key={client.id}<br/>
-  
-           className=&quot;absolute bg-red-500 text-white
-rounded-full w-8 h-8 flex items-center justify-center text-xs
-font-bold shadow-lg cursor-pointer hover:scale-110
-transition-transform&quot;<br/>
-              style={{<br/>
-         
-      left: `${20 + idx * 30}%`,<br/>
-                top: `${30 +
-idx * 15}%`<br/>
-              }}<br/>
-             
-title={client.name}<br/>
-            &gt;<br/>
-              {idx +
-1}<br/>
-            &lt;/div&gt;<br/>
-          ))}<br/>
-       
-&lt;/div&gt;<br/>
-<br/>
-        &lt;button <br/>
-         
-onClick={optimizeRoute}<br/>
-          className=&quot;w-full
-bg-blue-600 text-white py-3 rounded-lg flex items-center
-justify-center gap-2 hover:bg-blue-700 mb-4&quot;<br/>
-        &gt;<br/>
-
-         &lt;Navigation size={20} /&gt; Optimize Route<br/>
-       
-&lt;/button&gt;<br/>
-<br/>
-        {showRouteInfo &amp;&amp; (<br/>
- 
-        &lt;div className=&quot;bg-green-50 border border-green-200
-rounded-lg p-4 mb-4&quot;&gt;<br/>
-            &lt;div
-className=&quot;flex justify-between items-start mb-3&quot;&gt;<br/>
-
-             &lt;h3 className=&quot;font-semibold
-text-gray-800&quot;&gt;Optimized Route Info&lt;/h3&gt;<br/>
-         
-    &lt;button <br/>
-                onClick={() =&gt;
-setShowRouteInfo(false)}<br/>
-               
-className=&quot;text-gray-600 hover:text-gray-800&quot;<br/>
-        
-     &gt;<br/>
-                &lt;X size={18} /&gt;<br/>
-           
-  &lt;/button&gt;<br/>
-            &lt;/div&gt;<br/>
-            &lt;div
-className=&quot;grid grid-cols-2 gap-3 text-sm mb-3&quot;&gt;<br/>
-  
-           &lt;div className=&quot;bg-white rounded p-2&quot;&gt;<br/>
-
-               &lt;p className=&quot;text-gray-600&quot;&gt;Total
-Stops&lt;/p&gt;<br/>
-                &lt;p className=&quot;text-xl
-font-bold text-blue-600&quot;&gt;{totalStops}&lt;/p&gt;<br/>
-        
-     &lt;/div&gt;<br/>
-              &lt;div className=&quot;bg-white
-rounded p-2&quot;&gt;<br/>
-                &lt;p
-className=&quot;text-gray-600&quot;&gt;Est. Time&lt;/p&gt;<br/>
-     
-          &lt;p className=&quot;text-xl font-bold
-text-blue-600&quot;&gt;{totalTime} min&lt;/p&gt;<br/>
-             
-&lt;/div&gt;<br/>
-            &lt;/div&gt;<br/>
-            &lt;p
-className=&quot;text-xs text-gray-600 mb-2&quot;&gt;Route optimized
-by address sequence&lt;/p&gt;<br/>
-          &lt;/div&gt;<br/>
-      
- )}<br/>
-<br/>
-        &lt;div className=&quot;space-y-2&quot;&gt;<br/>
-
-         &lt;h3 className=&quot;font-semibold text-gray-800 mb-2&quot;&gt;<br/>
-
-           {showRouteInfo ? 'Suggested Route Order' : 'Client
-Locations'}<br/>
-          &lt;/h3&gt;<br/>
-          {(showRouteInfo
-? optimizedClients : clients).map((client, idx) =&gt; (<br/>
-        
-   &lt;div key={client.id} className=&quot;bg-white rounded-lg shadow
-p-3 border border-gray-200 flex items-center gap-3&quot;&gt;<br/>
-   
-          &lt;div className=&quot;bg-red-500 text-white rounded-full
-w-8 h-8 flex items-center justify-center text-sm font-bold
-flex-shrink-0&quot;&gt;<br/>
-                {idx + 1}<br/>
-         
-    &lt;/div&gt;<br/>
-              &lt;div className=&quot;flex-1&quot;&gt;<br/>
-
-               &lt;p className=&quot;font-medium
-text-gray-800&quot;&gt;{client.name}&lt;/p&gt;<br/>
-               
-&lt;p className=&quot;text-sm text-gray-600&quot;&gt;{client.address}&lt;/p&gt;<br/>
-
-             &lt;/div&gt;<br/>
-              {showRouteInfo &amp;&amp;
-(<br/>
-                &lt;div className=&quot;text-xs
-text-gray-500&quot;&gt;<br/>
-                 
-~{estimatedTimePerStop} min<br/>
-                &lt;/div&gt;<br/>
-  
-           )}<br/>
-            &lt;/div&gt;<br/>
-          ))}<br/>
- 
-      &lt;/div&gt;<br/>
-      &lt;/div&gt;<br/>
-    );<br/>
-  };<br/>
-<br/>
-
- const NotificationsPage = () =&gt; {<br/>
-    const getPriorityColor
-= (priority) =&gt; {<br/>
-      switch(priority) {<br/>
-        case
-'high': return 'bg-red-100 text-red-800 border-red-200';<br/>
-       
-case 'medium': return 'bg-yellow-100 text-yellow-800
-border-yellow-200';<br/>
-        default: return 'bg-blue-100
-text-blue-800 border-blue-200';<br/>
-      }<br/>
-    };<br/>
-<br/>
- 
-  const handleDismiss = (id) =&gt; {<br/>
-     
-setNotifications(notifications.filter(n =&gt; n.id !== id));<br/>
-   
-};<br/>
-<br/>
-    const handleAddNotification = (notif) =&gt; {<br/>
-
-     setNotifications([...notifications, { ...notif, id: Date.now(),
-date: 'Today' }]);<br/>
-      setShowAddNotification(false);<br/>
-   
-};<br/>
-<br/>
-    return (<br/>
-      &lt;div className=&quot;p-4&quot;&gt;<br/>
-
-       &lt;div className=&quot;flex justify-between items-center
-mb-2&quot;&gt;<br/>
-          &lt;h2 className=&quot;text-2xl
-font-bold text-gray-800&quot;&gt;Notifications&lt;/h2&gt;<br/>
-      
-   &lt;button<br/>
-            onClick={() =&gt;
-setShowAddNotification(true)}<br/>
-            className=&quot;bg-blue-600
-text-white px-4 py-2 rounded-lg flex items-center gap-2
-hover:bg-blue-700&quot;<br/>
-          &gt;<br/>
-            &lt;Plus
-size={20} /&gt; Add<br/>
-          &lt;/button&gt;<br/>
-       
-&lt;/div&gt;<br/>
-        &lt;p className=&quot;text-sm text-gray-600
-mb-4&quot;&gt;Note: Clients should include their name when sending
-notifications&lt;/p&gt;<br/>
-<br/>
-        {showAddNotification &amp;&amp;
-(<br/>
-          &lt;div className=&quot;bg-blue-50 rounded-lg p-4
-mb-4 border border-blue-200&quot;&gt;<br/>
-            &lt;h3
-className=&quot;font-semibold mb-3 text-gray-800&quot;&gt;New
-Notification&lt;/h3&gt;<br/>
-            &lt;div
-className=&quot;space-y-3&quot;&gt;<br/>
-              &lt;input<br/>
-
-               type=&quot;text&quot;<br/>
-               
-placeholder=&quot;Notification message&quot;<br/>
-               
-id=&quot;notif-message&quot;<br/>
-                className=&quot;w-full
-p-2 border rounded&quot;<br/>
-              /&gt;<br/>
-             
-&lt;select<br/>
-                id=&quot;notif-priority&quot;<br/>
-  
-             className=&quot;w-full p-2 border rounded&quot;<br/>
-   
-            defaultValue=&quot;medium&quot;<br/>
-              &gt;<br/>
-
-               &lt;option value=&quot;high&quot;&gt;High
-Priority&lt;/option&gt;<br/>
-                &lt;option
-value=&quot;medium&quot;&gt;Medium Priority&lt;/option&gt;<br/>
-     
-          &lt;option value=&quot;low&quot;&gt;Low Priority&lt;/option&gt;<br/>
-
-             &lt;/select&gt;<br/>
-              &lt;select<br/>
-     
-          id=&quot;notif-type&quot;<br/>
-               
-className=&quot;w-full p-2 border rounded&quot;<br/>
-               
-defaultValue=&quot;general&quot;<br/>
-              &gt;<br/>
-       
-        &lt;option value=&quot;pickup&quot;&gt;Pickup&lt;/option&gt;<br/>
-
-               &lt;option value=&quot;payment&quot;&gt;Payment&lt;/option&gt;<br/>
-
-               &lt;option value=&quot;new&quot;&gt;New
-Client&lt;/option&gt;<br/>
-                &lt;option
-value=&quot;general&quot;&gt;General&lt;/option&gt;<br/>
-            
- &lt;/select&gt;<br/>
-              &lt;div className=&quot;flex
-gap-2&quot;&gt;<br/>
-                &lt;button<br/>
-                
- onClick={() =&gt; {<br/>
-                    const message =
-document.getElementById('notif-message').value;<br/>
-                
-   const priority = document.getElementById('notif-priority').value;<br/>
-
-                   const type =
-document.getElementById('notif-type').value;<br/>
-                   
-if (message) {<br/>
-                      handleAddNotification({
-message, priority, type });<br/>
-                    }<br/>
-         
-        }}<br/>
-                  className=&quot;flex-1 bg-green-600
-text-white py-2 rounded hover:bg-green-700&quot;<br/>
-               
-&gt;<br/>
-                  &lt;Save size={18} className=&quot;inline
-mr-2&quot; /&gt; Save<br/>
-                &lt;/button&gt;<br/>
-     
-          &lt;button<br/>
-                  onClick={() =&gt;
-setShowAddNotification(false)}<br/>
-                 
-className=&quot;flex-1 bg-gray-400 text-white py-2 rounded
-hover:bg-gray-500&quot;<br/>
-                &gt;<br/>
-              
-   &lt;X size={18} className=&quot;inline mr-2&quot; /&gt; Cancel<br/>
-
-               &lt;/button&gt;<br/>
-              &lt;/div&gt;<br/>
- 
-          &lt;/div&gt;<br/>
-          &lt;/div&gt;<br/>
-        )}<br/>
-
-       <br/>
-        &lt;div className=&quot;space-y-3&quot;&gt;<br/>
-
-         {notifications.length === 0 ? (<br/>
-            &lt;div
-className=&quot;bg-gray-50 rounded-lg p-8 text-center&quot;&gt;<br/>
-
-             &lt;Bell size={48} className=&quot;mx-auto text-gray-400
-mb-2&quot; /&gt;<br/>
-              &lt;p
-className=&quot;text-gray-600&quot;&gt;No notifications&lt;/p&gt;<br/>
-
-           &lt;/div&gt;<br/>
-          ) : (<br/>
-           
-notifications.map(notif =&gt; (<br/>
-              &lt;div
-key={notif.id} className={`rounded-lg shadow p-4 border
-${getPriorityColor(notif.priority)}`}&gt;<br/>
-                &lt;div
-className=&quot;flex justify-between items-start&quot;&gt;<br/>
-     
-            &lt;div className=&quot;flex-1&quot;&gt;<br/>
-           
-        &lt;p className=&quot;font-medium&quot;&gt;{notif.message}&lt;/p&gt;<br/>
-
-                   &lt;p className=&quot;text-sm opacity-75
-mt-1&quot;&gt;{notif.date}&lt;/p&gt;<br/>
-                  &lt;/div&gt;<br/>
-
-                 &lt;button<br/>
-                    onClick={() =&gt;
-handleDismiss(notif.id)}<br/>
-                   
-className=&quot;text-gray-600 hover:text-gray-800&quot;<br/>
-        
-         &gt;<br/>
-                    &lt;X size={18} /&gt;<br/>
-   
-              &lt;/button&gt;<br/>
-                &lt;/div&gt;<br/>
-
-             &lt;/div&gt;<br/>
-            ))<br/>
-          )}<br/>
-
-       &lt;/div&gt;<br/>
-      &lt;/div&gt;<br/>
-    );<br/>
-  };<br/>
-<br/>
-
- const ContactPage = () =&gt; {<br/>
-    const handleSendMessage = ()
-=&gt; {<br/>
-      const name =
-document.getElementById('contact-name').value;<br/>
-      const email
-= document.getElementById('contact-email').value;<br/>
-      const
-message = document.getElementById('contact-message').value;<br/>
-    
- <br/>
-      const subject = encodeURIComponent('Message from Curb
-Crew App');<br/>
-      const body = encodeURIComponent(<br/>
-       
-`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`<br/>
-     
-);<br/>
-      window.location.href =
-`mailto:curbcrew@proton.me?subject=${subject}&amp;body=${body}`;<br/>
-
-   };<br/>
-<br/>
-    return (<br/>
-      &lt;div className=&quot;p-4&quot;&gt;<br/>
-
-       &lt;h2 className=&quot;text-2xl font-bold text-gray-800
-mb-4&quot;&gt;Contact&lt;/h2&gt;<br/>
-        <br/>
-        &lt;div
-className=&quot;bg-white rounded-lg shadow p-6 mb-4 border
-border-gray-200&quot;&gt;<br/>
-          &lt;h3
-className=&quot;font-semibold text-lg mb-4 text-gray-800&quot;&gt;Business
-Contact&lt;/h3&gt;<br/>
-          &lt;div className=&quot;space-y-3&quot;&gt;<br/>
-
-           &lt;div className=&quot;flex items-center gap-3&quot;&gt;<br/>
-
-             &lt;Phone className=&quot;text-blue-600&quot; size={20}
-/&gt;<br/>
-              &lt;div&gt;<br/>
-                &lt;p
-className=&quot;text-sm text-gray-600&quot;&gt;Phone&lt;/p&gt;<br/>
- 
-              &lt;p className=&quot;font-medium text-gray-800&quot;&gt;(505)
-670-2527&lt;/p&gt;<br/>
-              &lt;/div&gt;<br/>
-           
-&lt;/div&gt;<br/>
-            &lt;div className=&quot;flex
-items-center gap-3&quot;&gt;<br/>
-              &lt;Phone
-className=&quot;text-blue-600&quot; size={20} /&gt;<br/>
-            
- &lt;div&gt;<br/>
-                &lt;p className=&quot;text-sm
-text-gray-600&quot;&gt;Email&lt;/p&gt;<br/>
-                &lt;p
-className=&quot;font-medium text-gray-800&quot;&gt;curbcrew@proton.me&lt;/p&gt;<br/>
-
-             &lt;/div&gt;<br/>
-            &lt;/div&gt;<br/>
-        
- &lt;/div&gt;<br/>
-        &lt;/div&gt;<br/>
-<br/>
-        &lt;div
-className=&quot;bg-white rounded-lg shadow p-6 border
-border-gray-200&quot;&gt;<br/>
-          &lt;h3
-className=&quot;font-semibold text-lg mb-4 text-gray-800&quot;&gt;Quick
-Message&lt;/h3&gt;<br/>
-          &lt;div className=&quot;space-y-3&quot;&gt;<br/>
-
-           &lt;input<br/>
-              type=&quot;text&quot;<br/>
-  
-           id=&quot;contact-name&quot;<br/>
-             
-placeholder=&quot;Your name&quot;<br/>
-             
-className=&quot;w-full p-3 border rounded-lg&quot;<br/>
-           
-/&gt;<br/>
-            &lt;input<br/>
-              type=&quot;email&quot;<br/>
-
-             id=&quot;contact-email&quot;<br/>
-             
-placeholder=&quot;Your email&quot;<br/>
-             
-className=&quot;w-full p-3 border rounded-lg&quot;<br/>
-           
-/&gt;<br/>
-            &lt;textarea<br/>
-             
-id=&quot;contact-message&quot;<br/>
-              placeholder=&quot;Your
-message&quot;<br/>
-              rows=&quot;4&quot;<br/>
-            
- className=&quot;w-full p-3 border rounded-lg&quot;<br/>
-           
-&gt;&lt;/textarea&gt;<br/>
-            &lt;a <br/>
-             
-href=&quot;mailto:curbcrew@proton.me?subject=Message from Curb Crew
-App&quot;<br/>
-              className=&quot;block w-full bg-blue-600
-text-white py-3 rounded-lg hover:bg-blue-700 text-center&quot;<br/>
- 
-          &gt;<br/>
-              Send Message to Curb Crew<br/>
-    
-       &lt;/a&gt;<br/>
-          &lt;/div&gt;<br/>
-        &lt;/div&gt;<br/>
-
-     &lt;/div&gt;<br/>
-    );<br/>
-  };<br/>
-<br/>
-  return (<br/>
-  
- &lt;div className=&quot;max-w-md mx-auto bg-gray-50 min-h-screen
-flex flex-col&quot;&gt;<br/>
-      &lt;header className=&quot;bg-blue-600
-text-white p-4 shadow-lg&quot;&gt;<br/>
-        &lt;h1
-className=&quot;text-xl font-bold&quot;&gt;Curb Crew&lt;/h1&gt;<br/>
-
-       &lt;p className=&quot;text-sm opacity-90&quot;&gt;Manage your
-business on the go&lt;/p&gt;<br/>
-      &lt;/header&gt;<br/>
-<br/>
-  
-   &lt;main className=&quot;flex-1 overflow-y-auto pb-20&quot;&gt;<br/>
-
-       {activePage === 'clients' &amp;&amp; &lt;ClientList /&gt;}<br/>
-
-       {activePage === 'prices' &amp;&amp; &lt;PricePage /&gt;}<br/>
-
-       {activePage === 'map' &amp;&amp; &lt;MapPage /&gt;}<br/>
-     
-  {activePage === 'notifications' &amp;&amp; &lt;NotificationsPage
-/&gt;}<br/>
-        {activePage === 'contact' &amp;&amp; &lt;ContactPage
-/&gt;}<br/>
-      &lt;/main&gt;<br/>
-<br/>
-      &lt;nav
-className=&quot;fixed bottom-0 left-0 right-0 bg-white border-t
-border-gray-200 shadow-lg max-w-md mx-auto&quot;&gt;<br/>
-       
-&lt;div className=&quot;grid grid-cols-5&quot;&gt;<br/>
-         
-&lt;NavButton icon={Users} label=&quot;Clients&quot; page=&quot;clients&quot;
-/&gt;<br/>
-          &lt;NavButton icon={DollarSign} label=&quot;Prices&quot;
-page=&quot;prices&quot; /&gt;<br/>
-          &lt;NavButton icon={Map}
-label=&quot;Map&quot; page=&quot;map&quot; /&gt;<br/>
-         
-&lt;NavButton icon={Bell} label=&quot;Alerts&quot;
-page=&quot;notifications&quot; /&gt;<br/>
-          &lt;NavButton
-icon={Phone} label=&quot;Contact&quot; page=&quot;contact&quot; /&gt;<br/>
-
-       &lt;/div&gt;<br/>
-      &lt;/nav&gt;<br/>
-    &lt;/div&gt;<br/>
-
- );<br/>
-};<br/>
-<br/>
-export default BinBusinessApp;</p>
-</body>
+    ReactDOM.render(<BinBusinessApp />, document.getElementById('root'));
+</script></body>
 </html>
