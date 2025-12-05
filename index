@@ -573,4 +573,146 @@
                               handleAddNotification({ message, priority, type });
                             }
                           }}
-                          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green
+                          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+>
+<Save size={18} className="inline mr-2" /> Save
+</button>
+<button
+onClick={() => setShowAddNotification(false)}
+className="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500"
+>
+<X size={18} className="inline mr-2" /> Cancel
+</button>
+</div>
+</div>
+</div>
+)}<div className="space-y-3">
+              {notifications.length === 0 ? (
+                <div className="bg-gray-50 rounded-lg p-8 text-center">
+                  <Bell size={48} className="mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600">No notifications</p>
+                </div>
+              ) : (
+                notifications.map(notif => (
+                  <div key={notif.id} className={`rounded-lg shadow p-4 border ${getPriorityColor(notif.priority)}`}>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-medium">{notif.message}</p>
+                        <p className="text-sm opacity-75 mt-1">{notif.date}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDismiss(notif.id)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      const ContactPage = () => {
+        const handleSendMessage = () => {
+          const name = document.getElementById('contact-name').value;
+          const email = document.getElementById('contact-email').value;
+          const message = document.getElementById('contact-message').value;
+          
+          const subject = encodeURIComponent('Message from Curb Crew App');
+          const body = encodeURIComponent(
+            `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+          );
+          window.location.href = `mailto:curbcrew@proton.me?subject=${subject}&body=${body}`;
+        };
+
+        return (
+          <div className="p-4">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact</h2>
+            
+            <div className="bg-white rounded-lg shadow p-6 mb-4 border border-gray-200">
+              <h3 className="font-semibold text-lg mb-4 text-gray-800">Business Contact</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Phone className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Phone</p>
+                    <p className="font-medium text-gray-800">(505) 670-2527</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-medium text-gray-800">curbcrew@proton.me</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+              <h3 className="font-semibold text-lg mb-4 text-gray-800">Quick Message</h3>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  id="contact-name"
+                  placeholder="Your name"
+                  className="w-full p-3 border rounded-lg"
+                />
+                <input
+                  type="email"
+                  id="contact-email"
+                  placeholder="Your email"
+                  className="w-full p-3 border rounded-lg"
+                />
+                <textarea
+                  id="contact-message"
+                  placeholder="Your message"
+                  rows="4"
+                  className="w-full p-3 border rounded-lg"
+                ></textarea>
+                <a 
+                  href="mailto:curbcrew@proton.me?subject=Message from Curb Crew App"
+                  className="block w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 text-center"
+                >
+                  Send Message to Curb Crew
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+          <header className="bg-blue-600 text-white p-4 shadow-lg">
+            <h1 className="text-xl font-bold">Curb Crew</h1>
+            <p className="text-sm opacity-90">Manage your business on the go</p>
+          </header>
+
+          <main className="flex-1 overflow-y-auto pb-20">
+            {activePage === 'clients' && <ClientList />}
+            {activePage === 'prices' && <PricePage />}
+            {activePage === 'map' && <MapPage />}
+            {activePage === 'notifications' && <NotificationsPage />}
+            {activePage === 'contact' && <ContactPage />}
+          </main>
+
+          <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg max-w-md mx-auto">
+            <div className="grid grid-cols-5">
+              <NavButton icon={Users} label="Clients" page="clients" />
+              <NavButton icon={DollarSign} label="Prices" page="prices" />
+              <NavButton icon={Map} label="Map" page="map" />
+              <NavButton icon={Bell} label="Alerts" page="notifications" />
+              <NavButton icon={Phone} label="Contact" page="contact" />
+            </div>
+          </nav>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<BinBusinessApp />, document.getElementById('root'));
+</script></body>
+</html>
